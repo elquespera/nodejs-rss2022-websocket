@@ -5,6 +5,9 @@
 1. Clone/download repo
 2. `npm install`
 
+# WSL 2.0: sudo apt install libxtst-dev libpng++-dev
+
+
 ## Usage
 **Development**
 

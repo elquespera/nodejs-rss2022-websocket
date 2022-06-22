@@ -1,0 +1,21 @@
+{   
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "ES6",
+        "target": "ES5",
+        "allowJs": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true
+    },
+    "ts-node": {
+        "esm": true
+    },
+    "include": ["src"],
+    "exclude": [
+        "./node_modules",
+        "./dist",
+        "./tests"
+    ]
+}
