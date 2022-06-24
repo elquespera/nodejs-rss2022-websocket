@@ -15,7 +15,7 @@ console.log(`Start static http server on the ${HTTP_PORT} port!`);
 httpServer.listen(HTTP_PORT);
 
 wsServer.on('connection', async ws => {
-    const wsStream = createWebSocketStream(ws, { encoding: 'utf8' });
+    const wsStream = createWebSocketStream(ws, { decodeStrings: false });
 
     const wsTranform = new WsTranform(wsStream, {});
 
