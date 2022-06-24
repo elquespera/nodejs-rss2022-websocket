@@ -17,7 +17,7 @@ httpServer.listen(HTTP_PORT);
 wsServer.on('connection', async ws => {
     const wsStream = createWebSocketStream(ws, { encoding: 'utf8' });
 
-    const wsTranform = new WsTranform(ws, {});
+    const wsTranform = new WsTranform(wsStream, {});
 
     await pipeline(
         wsStream, 
