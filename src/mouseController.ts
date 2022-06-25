@@ -4,14 +4,22 @@ class MouseController {
     constructor() {
         robot.setMouseDelay(0);
     }
-    
-    private moveTo(x: number, y: number) {
+
+    private moveTo(x: number, y: number, safeWidth?: number, safeHeight?: number) {
+        if (safeWidth) {
+            if (!safeHeight) safeHeight = safeWidth;
+            const {width: screenWidth, height: screenHeight} = robot.getScreenSize();
+            console.log(x, y);
+            x = Math.max(safeWidth / 2, Math.min(screenWidth - safeWidth / 2, x));
+            y = Math.max(safeHeight / 2, Math.min(screenHeight - safeHeight / 2, y));
+            console.log(x, y);
+        }
         robot.moveMouse(x, y);
     }
 
-    private moveBy(offsetX: number, offsetY: number) {
+    private moveBy(offsetX: number, offsetY: number, safeWidth?: number, safeHeight?: number) {
         const { x, y } = robot.getMousePos();
-        this.moveTo(x + offsetX, y + offsetY);
+        this.moveTo(x + offsetX, y + offsetY, safeWidth, safeHeight);
     }
 
     public moveUp(offset: number) {
@@ -32,8 +40,7 @@ class MouseController {
         return `${x},${y}`;
     }
 
-    private drawRectangleAt(x: number, y: number, width: number, height: number): void {   
-        
+    private drawRectangleAt(x: number, y: number, width: number, height: number): void {          
         robot.mouseToggle('down');
         for (let i = 0; i < width; i++) {
             robot.dragMouse(x + i, y);
@@ -51,7 +58,6 @@ class MouseController {
     }
 
     public drawRectangle(width: number, height: number): void {   
-        this.moveBy(-width % 2, -height % 2);
         const { x, y } = robot.getMousePos();
         this.drawRectangleAt(x, y, width, height);
     }
@@ -59,8 +65,6 @@ class MouseController {
     public drawSquare(side: number): void {
         this.drawRectangle(side, side);
     }
-
-
 
     private drawCircleAt(x: number, y: number, radius: number): void {        
         robot.mouseToggle('down');
@@ -72,8 +76,8 @@ class MouseController {
     }
 
     public drawCircle(radius: number): void {
-        const { x, y } = robot.getMousePos();
-        this.moveBy(radius, 0);
+        this.moveBy(radius, 0, radius * 2);
+        const { x, y } = robot.getMousePos();        
         this.drawCircleAt(x, y, radius);
     }  
 }
