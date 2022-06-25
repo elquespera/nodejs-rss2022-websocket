@@ -1,6 +1,6 @@
-import { WebSocket } from "ws";
-import robot from 'robotjs';
 import os from 'os';
+
+import MouseController from './mouseController.js';
 
 import { Transform, TransformCallback, TransformOptions, Duplex } from 'stream';
 
@@ -17,40 +17,16 @@ const mouseCommands = {
 }
 
 
-class WsTranform extends Transform {
+class WsController extends Transform {
     wsStream: Duplex;
+    mouseController: MouseController;
+
     constructor(wsStream: Duplex, options: TransformOptions) {
         super(options);
         this.wsStream = wsStream;
-    }
-
-    private drawRectangle(x: number, y: number, width: number, height: number): void {   
-        robot.mouseToggle('down');
-        for (let i = 0; i < width; i++) {
-            robot.dragMouse(x + i, y);
-        }
-        for (let i = 0; i < height; i++) {
-            robot.dragMouse(x + width, y + i);
-        }
-        for (let i = width; i >= 0; i--) {
-            robot.dragMouse(x + i, y + height);
-        }
-        for (let i = height; i >= 0; i--) {
-            robot.dragMouse(x, y + i);
-        }
-        robot.mouseToggle('up');
+        this.mouseController = new MouseController();
     }
     
-    private drawSquare(x: number, y: number, side: number): void {
-        this.drawRectangle(x, y, side, side);
-    }
-
-    private drawCircle(x: number, y: number, radius: number): void {
-        for (let i = 0; i <= Math.PI * 2; i += 0.01) {
-            robot.dragMouse(x + (radius * Math.cos(i)), 
-                            y + (radius * Math.sin(i)));
-        }
-    }
 
     _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback): void {
         const commands = chunk.toString();
@@ -58,34 +34,32 @@ class WsTranform extends Transform {
         const command = params[0];
         params.shift();
         
-        robot.setMouseDelay(0);
-        const { x, y } = robot.getMousePos();
         let answer = commands;
     
         switch (command) {
             case mouseCommands.UP:
-                robot.moveMouse(x, y - parseInt(params[0]));
+                this.mouseController.moveUp(parseInt(params[0]));
                 break;
             case mouseCommands.DOWN:
-                robot.moveMouse(x, y + parseInt(params[0]));
+                this.mouseController.moveDown(parseInt(params[0]));
                 break;            
             case mouseCommands.LEFT:
-                robot.moveMouse(x - parseInt(params[0]), y);
+                this.mouseController.moveLeft(parseInt(params[0]));
                 break;            
             case mouseCommands.RIGHT:
-                robot.moveMouse(x + parseInt(params[0]), y);
+                this.mouseController.moveRight(parseInt(params[0]));
                 break;            
             case mouseCommands.POSITION:   
-                answer = `mouse_position ${x},${y}`; 
+                answer = `mouse_position ${this.mouseController.formattedPosition}`; 
                 break;
             case mouseCommands.SQUARE:
-                this.drawSquare(x, y, parseInt(params[0]));
+                this.mouseController.drawSquare(parseInt(params[0]));
                 break;                
             case mouseCommands.RECTANGLE:
-                this.drawRectangle(x, y, parseInt(params[0]), parseInt(params[1]));
+                this.mouseController.drawRectangle(parseInt(params[0]), parseInt(params[1]));
                 break;                
             case mouseCommands.CIRCLE:
-                this.drawCircle(x, y, parseInt(params[0]));
+                this.mouseController.drawCircle(parseInt(params[0]));
                 break;   
         }
 
@@ -103,4 +77,4 @@ class WsTranform extends Transform {
 }
 
 
-export { mouseCommands, WsTranform }
+export { WsController }

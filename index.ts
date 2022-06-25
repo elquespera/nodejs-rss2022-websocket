@@ -7,7 +7,7 @@ import { httpServer } from './src/httpServer.js';
 import { wsServer } from './src/wsServer.js';
 import { pipeline } from 'stream/promises';
 
-import { WsTranform } from './src/commands.js';
+import { WsController } from './src/wsController.js';
 
 const HTTP_PORT = 3000;
 
@@ -17,7 +17,7 @@ httpServer.listen(HTTP_PORT);
 wsServer.on('connection', async ws => {
     const wsStream = createWebSocketStream(ws, { decodeStrings: false });
 
-    const wsTranform = new WsTranform(wsStream, {});
+    const wsTranform = new WsController(wsStream, {});
 
     await pipeline(
         wsStream, 
