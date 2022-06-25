@@ -82,15 +82,14 @@ class MouseController {
     }
 
     public async printScreen(): Promise<string> {
-        // const captureSize = 4;
         const captureSize = 200;
 
         const { x, y } = robot.getMousePos(); 
         const screenBitmap = robot.screen.capture(x, y, captureSize, captureSize);
 
-
+        // For highDPI displays
         const multi = screenBitmap.width / captureSize;
-        console.log(x, y, multi);
+        
         return await convertBitmapToPNG(screenBitmap, multi);
     }
 }
