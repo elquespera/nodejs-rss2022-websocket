@@ -30,7 +30,7 @@ class WsController extends Transform {
     }
     
 
-    _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback): void {
+    async _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback): Promise<void> {
         const commands = chunk.toString();
         const params = commands.split(' ');
         const command = params[0];
@@ -67,7 +67,7 @@ class WsController extends Transform {
                     this.mouseController.drawCircle(parseInt(params[0]));
                     break;   
                 case mouseCommands.PRINT_SCREEN:
-                    answer = this.mouseController.printScreen();
+                    answer = await this.mouseController.printScreen();
                     break;                
             }
         }
@@ -76,7 +76,7 @@ class WsController extends Transform {
         }
 
         this.wsStream.write(command + ' ' + answer);
-        callback(null, `${command} ${answer}: ${status} ${os.EOL}`);
+        callback(null, `${command}: ${status} ${os.EOL}`);
     }
 }
 

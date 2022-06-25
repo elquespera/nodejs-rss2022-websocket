@@ -81,12 +81,17 @@ class MouseController {
         this.drawCircleAt(x, y, radius);
     }
 
-    public printScreen(): string {
-        const captureSize = 30;
+    public async printScreen(): Promise<string> {
+        // const captureSize = 4;
+        const captureSize = 200;
 
         const { x, y } = robot.getMousePos(); 
         const screenBitmap = robot.screen.capture(x, y, captureSize, captureSize);
-        return convertBitmapToPNG(screenBitmap);
+
+
+        const multi = screenBitmap.width / captureSize;
+        console.log(x, y, multi);
+        return await convertBitmapToPNG(screenBitmap, multi);
     }
 }
 

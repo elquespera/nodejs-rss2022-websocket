@@ -2,8 +2,24 @@ import Jimp from 'jimp';
 
 import { Bitmap } from "robotjs";
 
-function convertBitmapToPNG(bitmap: Bitmap): string {
-    return '';
+async function convertBitmapToPNG(bitmap: Bitmap, multi: number = 1): Promise<string> {
+    let buffer: Buffer;
+
+    const image = new Jimp(bitmap.width, bitmap.height, (err, image) => {
+    });
+
+    image.scan(0, 0, image.bitmap.width, image.bitmap.height, (x, y, i) => {
+        const color = bitmap.colorAt(x * multi, y * multi);
+        // console.log(color);
+        image.setPixelColor(Jimp.cssColorToHex(color), x, y);
+        // console.log(image.getPixelColor(x, y));
+    });
+
+
+    buffer = await image.getBufferAsync(Jimp.MIME_PNG);
+
+    
+    return buffer.toString('base64');
 }
 
 export default convertBitmapToPNG; 
