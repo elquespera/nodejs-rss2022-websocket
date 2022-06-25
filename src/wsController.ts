@@ -13,7 +13,9 @@ const mouseCommands = {
 
     CIRCLE: 'draw_circle',
     RECTANGLE: 'draw_rectangle',
-    SQUARE: 'draw_square'
+    SQUARE: 'draw_square',
+
+    PRINT_SCREEN: 'prnt_scrn'
 }
 
 
@@ -33,46 +35,48 @@ class WsController extends Transform {
         const params = commands.split(' ');
         const command = params[0];
         params.shift();
+
+        this.push(`Received command: ${commands}${os.EOL}`);
         
-        let answer = commands;
-    
-        switch (command) {
-            case mouseCommands.UP:
-                this.mouseController.moveUp(parseInt(params[0]));
-                break;
-            case mouseCommands.DOWN:
-                this.mouseController.moveDown(parseInt(params[0]));
-                break;            
-            case mouseCommands.LEFT:
-                this.mouseController.moveLeft(parseInt(params[0]));
-                break;            
-            case mouseCommands.RIGHT:
-                this.mouseController.moveRight(parseInt(params[0]));
-                break;            
-            case mouseCommands.POSITION:   
-                answer = `mouse_position ${this.mouseController.formattedPosition}`; 
-                break;
-            case mouseCommands.SQUARE:
-                this.mouseController.drawSquare(parseInt(params[0]));
-                break;                
-            case mouseCommands.RECTANGLE:
-                this.mouseController.drawRectangle(parseInt(params[0]), parseInt(params[1]));
-                break;                
-            case mouseCommands.CIRCLE:
-                this.mouseController.drawCircle(parseInt(params[0]));
-                break;   
+        let answer = '';
+        let status = 'completed successfully';
+        try {
+            switch (command) {
+                case mouseCommands.UP:
+                    this.mouseController.moveUp(parseInt(params[0]));
+                    break;
+                case mouseCommands.DOWN:
+                    this.mouseController.moveDown(parseInt(params[0]));
+                    break;            
+                case mouseCommands.LEFT:
+                    this.mouseController.moveLeft(parseInt(params[0]));
+                    break;            
+                case mouseCommands.RIGHT:
+                    this.mouseController.moveRight(parseInt(params[0]));
+                    break;            
+                case mouseCommands.POSITION:   
+                    answer = this.mouseController.formattedPosition; 
+                    break;
+                case mouseCommands.SQUARE:
+                    this.mouseController.drawSquare(parseInt(params[0]));
+                    break;                
+                case mouseCommands.RECTANGLE:
+                    this.mouseController.drawRectangle(parseInt(params[0]), parseInt(params[1]));
+                    break;                
+                case mouseCommands.CIRCLE:
+                    this.mouseController.drawCircle(parseInt(params[0]));
+                    break;   
+                case mouseCommands.PRINT_SCREEN:
+                    answer = this.mouseController.printScreen();
+                    break;                
+            }
+        }
+        catch (error) {
+            status = `error - ${error.message}`;
         }
 
-
-        // const buff = new Buffer.from(JSON.stringify(newConfigFile, null, 2));
-        // const base64Config = buff.toString("base64");
-
-        // if (i % 4 === 0) {  
-        //     [image.image[i], image.image[i + 2]] = [image.image[i + 2],image.image[i]] // bgr -> rgb color
-        //     }        
-
-        this.wsStream.write(answer);
-        callback(null, `Received command: ${commands}${os.EOL}`);
+        this.wsStream.write(command + ' ' + answer);
+        callback(null, `${command} ${answer}: ${status} ${os.EOL}`);
     }
 }
 

@@ -1,5 +1,7 @@
 import robot from 'robotjs';
 
+import convertBitmapToPNG from './convertImage.js';
+
 class MouseController {
     constructor() {
         robot.setMouseDelay(0);
@@ -9,10 +11,8 @@ class MouseController {
         if (safeWidth) {
             if (!safeHeight) safeHeight = safeWidth;
             const {width: screenWidth, height: screenHeight} = robot.getScreenSize();
-            console.log(x, y);
             x = Math.max(safeWidth / 2, Math.min(screenWidth - safeWidth / 2, x));
             y = Math.max(safeHeight / 2, Math.min(screenHeight - safeHeight / 2, y));
-            console.log(x, y);
         }
         robot.moveMouse(x, y);
     }
@@ -79,7 +79,15 @@ class MouseController {
         this.moveBy(radius, 0, radius * 2);
         const { x, y } = robot.getMousePos();        
         this.drawCircleAt(x, y, radius);
-    }  
+    }
+
+    public printScreen(): string {
+        const captureSize = 30;
+
+        const { x, y } = robot.getMousePos(); 
+        const screenBitmap = robot.screen.capture(x, y, captureSize, captureSize);
+        return convertBitmapToPNG(screenBitmap);
+    }
 }
 
 export default MouseController;

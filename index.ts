@@ -1,6 +1,3 @@
-import Jimp from 'jimp';
-import robot from 'robotjs';
-
 import { createWebSocketStream } from 'ws';
 
 import { httpServer } from './src/httpServer.js';
