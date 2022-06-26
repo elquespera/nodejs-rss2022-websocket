@@ -78,7 +78,7 @@ class MouseController {
     public drawCircle(radius: number): void {
         this.moveBy(radius, 0, radius * 2);
         const { x, y } = robot.getMousePos();        
-        this.drawCircleAt(x, y, radius);
+        this.drawCircleAt(x - radius, y, radius);
     }
 
     public async printScreen(): Promise<string> {
