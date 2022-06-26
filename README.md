@@ -18,7 +18,6 @@ The following **developer dependencies** were utilized:
 
 - `nodemon` for automatic executing files on change;
 - `typescript`, `ts-node`, `ts-loader` for typescript transpiling;
-- `webpack` for packaging;
 - `@types/` for typescript type declarations.
 
 
@@ -28,7 +27,6 @@ The following **developer dependencies** were utilized:
 
 ```shell
 git clone https://github.com/elquespera/nodejs-rss2022-websocket.git
-
 cd ./nodejs-rss2022-websocket
 git checkout dev
 ```
@@ -50,4 +48,4 @@ The following scripts are available for building and running  the applicaiton:
 
 - `npm start` for watching ts files with on-the-fly transpiling;
 - `npm run start:dev` the same as `npm start`;
-- `npm run start:prod` for packaging with webpack and running the app
+- `npm run start:prod` for transpiling with `tsc` and running the app

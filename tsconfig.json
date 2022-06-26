@@ -1,11 +1,15 @@
 {   
     "compilerOptions": {
         "outDir": "./dist/",
+        "sourceRoot": "./src/",
+        "rootDir": "./src/",          
+
         "sourceMap": true,
         "noImplicitAny": true,
         "module": "ES6",
         "target": "ES5",
         "allowJs": true,
+
         "moduleResolution": "node",
         "esModuleInterop": true
     },
